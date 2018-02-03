@@ -119,15 +119,16 @@ class DB_Store extends ActionScheduler_Store {
 			$schedule = new ActionScheduler_NullSchedule();
 		}
 		$group = $data->group ? $data->group : '';
-		if ( $data->status == self::STATUS_PENDING ) {
-			$action = new ActionScheduler_Action( $hook, $args, $schedule, $group );
-		} elseif ( $data->status == self::STATUS_CANCELED ) {
-			$action = new ActionScheduler_NullAction( $hook, $args, $schedule, $group );
+
+		if ( self::STATUS_PENDING === $data->status ) {
+			$action_class = 'ActionScheduler_StoredAction';
+		} elseif ( self::STATUS_CANCELED === $data->status ) {
+			$action_class = 'ActionScheduler_CanceledAction';
 		} else {
-			$action = new ActionScheduler_FinishedAction( $hook, $args, $schedule, $group );
+			$action_class = 'ActionScheduler_FinishedAction';
 		}
 
-		return $action;
+		return new $action_class( $hook, $args, $schedule, $group, $data->action_id, $data->status, $data->claim_id );
 	}
 
 	/**
