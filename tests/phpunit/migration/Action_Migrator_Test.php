@@ -35,7 +35,7 @@ class Action_Migrator_Test extends UnitTestCase {
 		$this->assertEqualSets( $action->get_args(), $retrieved->get_args() );
 		$this->assertEquals( $action->get_schedule()->next()->format( 'U' ), $retrieved->get_schedule()->next()->format( 'U' ) );
 		$this->assertEquals( $action->get_group(), $retrieved->get_group() );
-		$this->assertEquals( \ActionScheduler_Store::STATUS_PENDING, $destination->get_status( $new_id ) );
+		$this->assertEquals( \ActionScheduler_Store::STATUS_PENDING, $retrieved->get_status() );
 
 
 		// ensure that the record in the old store does not exist
@@ -78,7 +78,7 @@ class Action_Migrator_Test extends UnitTestCase {
 		$this->assertEquals( $action->get_schedule()->next()->format( 'U' ), $retrieved->get_schedule()->next()->format( 'U' ) );
 		$this->assertEquals( $action->get_group(), $retrieved->get_group() );
 		$this->assertTrue( $retrieved->is_finished() );
-		$this->assertEquals( \ActionScheduler_Store::STATUS_COMPLETE, $destination->get_status( $new_id ) );
+		$this->assertEquals( \ActionScheduler_Store::STATUS_COMPLETE, $retrieved->get_status() );
 
 		// ensure that the record in the old store does not exist
 		$old_action = $source->fetch_action( $action_id );
@@ -105,7 +105,7 @@ class Action_Migrator_Test extends UnitTestCase {
 		$this->assertEquals( $action->get_schedule()->next()->format( 'U' ), $retrieved->get_schedule()->next()->format( 'U' ) );
 		$this->assertEquals( $action->get_group(), $retrieved->get_group() );
 		$this->assertTrue( $retrieved->is_finished() );
-		$this->assertEquals( \ActionScheduler_Store::STATUS_FAILED, $destination->get_status( $new_id ) );
+		$this->assertEquals( \ActionScheduler_Store::STATUS_FAILED, $retrieved->get_status() );
 
 		// ensure that the record in the old store does not exist
 		$old_action = $source->fetch_action( $action_id );

@@ -15,12 +15,7 @@ class Action_Migrator {
 
 	public function migrate( $source_action_id ) {
 		$action = $this->source->fetch_action( $source_action_id );
-
-		try {
-			$status = $this->source->get_status( $source_action_id );
-		} catch ( \Exception $e ) {
-			$status = '';
-		}
+		$status = $action->get_status();
 
 		if ( empty( $status ) || ! $action->get_schedule()->next() ) {
 			// empty status means the action didn't exist
