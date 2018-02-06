@@ -296,14 +296,6 @@ class DB_Store extends ActionScheduler_Store {
 		return $sql;
 	}
 
-	private function validate_sql_comparator( $comp ) {
-		if ( in_array( $comp, [ '!=', '>', '>=', '<', '<=', '=' ] ) ) {
-			return $comp;
-		}
-
-		return '=';
-	}
-
 	/**
 	 * Similar method to query_actions() but returns the number of matching rows
 	 *
