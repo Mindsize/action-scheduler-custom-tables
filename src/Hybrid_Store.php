@@ -148,6 +148,47 @@ class Hybrid_Store extends Store {
 	}
 
 	/**
+	 * @param array $query
+	 * @return array The IDs of actions matching the query
+	 */
+	public function query_actions_count( $query = [] ) {
+		$unmigrated_actions_count = $this->secondary_store->query_actions_count( $query );
+		$migrated_actions_count   = $this->primary_store->query_actions_count( $query );
+
+		return $unmigrated_actions_count + $migrated_actions_count;
+	}
+
+	/**
+	 * Get a count of all actions in the store, grouped by status
+	 *
+	 * @return array Set of 'status' => int $count pairs for statuses with 1 or more actions of that status.
+	 */
+	public function actions_count() {
+		$unmigrated_actions_count = $this->secondary_store->actions_count();
+		$migrated_actions_count   = $this->primary_store->actions_count();
+		$actions_count_by_status  = array();
+
+		foreach ( $this->get_status_labels() as $status_key => $status_label ) {
+
+			$count = 0;
+
+			if ( isset( $unmigrated_actions_count[ $status_key ] ) ) {
+				$count += $unmigrated_actions_count[ $status_key ];
+			}
+
+			if ( isset( $migrated_actions_count[ $status_key ] ) ) {
+				$count += $migrated_actions_count[ $status_key ];
+			}
+
+			$actions_count_by_status[ $status_key ] = $count;
+		}
+
+		$actions_count_by_status = array_filter( $actions_count_by_status );
+
+		return $actions_count_by_status;
+	}
+
+	/**
 	 * If any actions would have been claimed by the secondary store,
 	 * migrate them immediately, then ask the primary store for the
 	 * canonical claim.
